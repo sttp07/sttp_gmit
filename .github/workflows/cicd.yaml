@@ -38,3 +38,18 @@ jobs:
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Build and Analyze the SonarQube
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR-TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL}}
+
+      - name: Trivy Files System
+        run: trivy fs . > trivy.txt
+
+      - name: Image Scan
+        run: trivy image gautamm07/medical:latest > trivyimage.txt
+
+      - name: Trivy CIS Compliance Issue
+        run: trivy image --compliance docker-cis gautamm07/medical:latest > trivycompliance.txt
