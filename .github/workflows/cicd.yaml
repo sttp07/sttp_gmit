@@ -25,8 +25,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements_docker.txt ]; then pip install -r requirements_docker.txt; fi
-        - name: Docker Build and Push
-          run: |
-            docker build -t medical,
-            docker tag medical gautamm07/medical:latest
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Docker Build and Push to Docker Hub
+        run: |
+         docker build -t medical .
+         docker tag medical gautamm07/medical:latest
+         docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{ secrets.DOCKERHUB_TOKEN }}
+         docker push gautamm07/medical:latest
+        env:
+          DOCKER_CLI_ACI: 1
+
+      - name: Lint and Flake8
+        run: |
+         flake8 . --count --select=E9, F63, F7, F82 --show-source --statitics
+         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
