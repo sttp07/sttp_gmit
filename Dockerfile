@@ -3,7 +3,7 @@ FROM python:3.12.4-slim
 LABEL maintainer="Gautam"
 ENV PYTHONUNBUFFERED 1
 
-COPY ./requirements.txt requirements_docker.txt
+COPY ./requirements_docker.txt requirements_docker.txt
 
 COPY ./webapp /webapp
 
